@@ -1,0 +1,68 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    public function up(): void
+    {
+        Schema::create('reclamations', function (Blueprint $table) {
+            $table->id();
+            $table->string('reference', 20)->unique();
+
+            
+            $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
+            $table->foreignId('technicien_id')->nullable()->constrained('users')->nullOnDelete();
+
+           
+            $table->string('titre');
+            $table->text('description');
+            $table->string('adresse')->nullable();
+
+            
+            $table->decimal('latitude', 10, 7)->nullable();
+            $table->decimal('longitude', 10, 7)->nullable();
+            $table->string('zone')->nullable();
+
+           
+            $table->enum('gravite', ['faible', 'moyenne', 'critique'])->default('moyenne');
+            $table->enum('statut', [
+                'NOUVEAU',
+                'QUALIFIE',
+                'ASSIGNE',
+                'EN_COURS',
+                'RESOLU',
+                'CLOTURE',
+                'REJETE',
+                'DOUBLON',
+            ])->default('NOUVEAU');
+
+            
+            $table->float('ia_score')->nullable();
+            $table->text('ia_resume')->nullable();
+
+            
+            $table->string('photo_url')->nullable();
+
+            
+            $table->timestamp('assigned_at')->nullable();
+            $table->timestamp('resolved_at')->nullable();
+            $table->timestamp('closed_at')->nullable();
+
+            $table->timestamps();
+            $table->softDeletes();
+
+            
+            $table->index(['statut', 'gravite']);
+            $table->index(['zone', 'statut']);
+            $table->index(['latitude', 'longitude']);
+        });
+    }
+
+    public function down(): void
+    {
+        Schema::dropIfExists('reclamations');
+    }
+};
