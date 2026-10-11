@@ -1,14 +1,3 @@
-# Dépendances
-node_modules
-.pnp
-.pnp.js
-
-# Build
-dist
-dist-ssr
-build
-*.local
-
 # Logs
 logs
 *.log
@@ -18,7 +7,12 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-# Éditeurs
+node_modules
+dist
+dist-ssr
+*.local
+
+# Editor directories and files
 .vscode/*
 !.vscode/extensions.json
 .idea
@@ -28,13 +22,3 @@ lerna-debug.log*
 *.njsproj
 *.sln
 *.sw?
-
-# Env
-.env
-.env.local
-.env.*.local
-
-# Cache
-.eslintcache
-.cache
-.vite

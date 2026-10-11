@@ -7,10 +7,10 @@ use App\Http\Controllers\Api\ReclamationController;
 
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
+Route::post('/logout', [AuthController::class, 'logout']);
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/me', [AuthController::class, 'me']);
-    Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/reclamations',              [ReclamationController::class, 'index']);
     Route::post('/reclamations',             [ReclamationController::class, 'store']);
     Route::get('/reclamations/{reclamation}', [ReclamationController::class, 'show']);

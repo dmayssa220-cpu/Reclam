@@ -48,7 +48,27 @@ services:
     depends_on:
       - mysql
     networks:
-      - wl_network      
+      - wl_network
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      target: build  
+    container_name: wl_frontend
+    restart: unless-stopped
+    working_dir: /app
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    ports:
+      - "5173:5173"
+    environment:
+      VITE_API_URL: http://localhost:8000/api
+    command: sh -c "npm install && npm run dev -- --host 0.0.0.0"
+    depends_on:
+      - backend
+    networks:
+      - wl_network          
 
 volumes:
   mysql_data:

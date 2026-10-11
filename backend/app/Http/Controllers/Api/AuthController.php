@@ -7,6 +7,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
+use Laravel\Sanctum\PersonalAccessToken;
 
 class AuthController extends Controller
 {
@@ -25,9 +26,10 @@ class AuthController extends Controller
         ]);
 
         $user->assignRole('CITOYEN');
+        $user = $this->loadAuthData($user);
 
         return response()->json([
-            'user' => $user->load('roles'),
+            'user' => $user,
             'token' => $user->createToken('api')->plainTextToken,
         ], 201);
     }
@@ -47,22 +49,35 @@ class AuthController extends Controller
             ]);
         }
 
+        $user = $this->loadAuthData($user);
+
         return response()->json([
-            'user' => $user->load('roles', 'permissions'),
+            'user' => $user,
             'token' => $user->createToken('api')->plainTextToken,
         ]);
     }
 
     public function me(Request $request)
     {
-        return response()->json(
-            $request->user()->load('roles', 'permissions')
-        );
+        return response()->json($this->loadAuthData($request->user()));
     }
 
     public function logout(Request $request)
     {
-        $request->user()->currentAccessToken()->delete();
+        $token = $request->user('sanctum')?->currentAccessToken();
+
+        if ($token instanceof PersonalAccessToken) {
+            $token->delete();
+        }
+
         return response()->json(['message' => 'Déconnecté']);
+    }
+
+    private function loadAuthData(User $user): User
+    {
+        $user->load('roles');
+        $user->setRelation('permissions', $user->getAllPermissions());
+
+        return $user;
     }
 }
