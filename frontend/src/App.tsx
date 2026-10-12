@@ -14,6 +14,7 @@ import { ForbiddenPage } from '@/pages/errors/ForbiddenPage';
 import { NotFoundPage } from '@/pages/errors/NotFoundPage';
 import { MapPage } from '@/pages/MapPage';
 import { NotificationsPage } from '@/pages/NotificationsPage';
+import { KpiPage } from '@/pages/KpiPage';
 export default function App() {
   const { init, initialized } = useAuthStore();
 
@@ -45,6 +46,7 @@ export default function App() {
           <Route element={<AppLayout />}>
             <Route path="/dashboard" element={<DashboardPage />} />
             <Route path="/notifications" element={<NotificationsPage />} />
+            <Route path="/kpi" element={<KpiPage />} />
             <Route path="/reclamations" element={<DashboardPage />} />
            <Route path="/carte" element={<MapPage />} />
             <Route path="/kpi" element={<DashboardPage />} />

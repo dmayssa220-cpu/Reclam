@@ -4,6 +4,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\ReclamationController;
 use App\Http\Controllers\Api\NotificationController;
+use App\Http\Controllers\Api\DashboardController;
+use App\Http\Controllers\Api\KpiController;
 
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
@@ -29,5 +31,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/{id}/read',    [NotificationController::class, 'markAsRead']);
     Route::post('/read-all',     [NotificationController::class, 'markAllAsRead']);
     Route::delete('/{id}',       [NotificationController::class, 'destroy']);
+});
+Route::prefix('dashboard')->group(function () {
+    Route::get('/kpi',              [DashboardController::class, 'kpi']);
+    Route::get('/critiques',        [KpiController::class, 'critiquesEnCours']);
+    Route::get('/export',           [KpiController::class, 'export']);
 });    
 });
