@@ -45,8 +45,12 @@ services:
       DB_USERNAME: ${MYSQL_USER}
       DB_PASSWORD: ${MYSQL_PASSWORD}
       IA_SERVICE_URL: http://ia-service:8001
+      MAIL_MAILER: failover
+      MAIL_HOST: mailpit
+      MAIL_PORT: 1025
     depends_on:
       - mysql
+      - mailpit
     networks:
       - wl_network
   frontend:
@@ -68,7 +72,16 @@ services:
     depends_on:
       - backend
     networks:
-      - wl_network          
+      - wl_network
+  mailpit:
+    image: axllent/mailpit:latest
+    container_name: wl_mailpit
+    restart: unless-stopped
+    ports:
+      - "1025:1025"   # SMTP
+      - "8025:8025"   # Interface web
+    networks:
+      - wl_network              
 
 volumes:
   mysql_data:

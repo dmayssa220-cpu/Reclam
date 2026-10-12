@@ -59,16 +59,20 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     }
   },
 
-  logout: async () => {
-    try {
-      await api.post('/logout');
-    } catch {
-      // ignore
-    }
-    localStorage.removeItem('auth_token');
-    localStorage.removeItem('auth_user');
-    set({ user: null, token: null });
-  },
+ logout: async () => {
+  try {
+    await api.post('/logout');
+  } catch {
+    
+  }
+  localStorage.removeItem('auth_token');
+  localStorage.removeItem('auth_user');
+  set({ user: null, token: null });
+
+  
+  const { useNotificationStore } = await import('./notificationStore');
+  useNotificationStore.getState().reset();
+},
 
   fetchMe: async () => {
     const { data } = await api.get<User>('/me');

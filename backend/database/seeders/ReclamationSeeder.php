@@ -4,10 +4,13 @@ namespace Database\Seeders;
 
 use App\Models\Reclamation;
 use App\Models\User;
+use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class ReclamationSeeder extends Seeder
 {
+    use WithoutModelEvents;
+
     public function run(): void
     {
         $citoyens    = User::role('CITOYEN')->get();

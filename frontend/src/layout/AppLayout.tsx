@@ -2,11 +2,12 @@ import { Outlet, NavLink, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import {
   LayoutDashboard, FileWarning, MapPin, BarChart3, Users,
-  LogOut, Menu, X, Droplets, ChevronDown, Bell, User as UserIcon,
+  LogOut, Menu, X, Droplets, ChevronDown, User as UserIcon,
 } from 'lucide-react';
 import { useAuthStore } from '@/stores/authStore';
 import { cn } from '@/lib/utils';
 import type { Role } from '@/types';
+import { NotificationBell } from '@/components/notifications/NotificationBell';
 
 const navigation: { name: string; href: string; icon: typeof LayoutDashboard; roles: Role[] }[] = [
   { name: 'Tableau de bord', href: '/dashboard',     icon: LayoutDashboard, roles: ['ADMIN', 'SUPERVISEUR', 'ANALYSTE', 'TECHNICIEN', 'CITOYEN'] },
@@ -115,12 +116,8 @@ export function AppLayout() {
             <p className="text-xs text-slate-500">Voici l'état de vos réclamations aujourd'hui</p>
           </div>
 
-          <div className="flex items-center gap-2">
-            <button className="relative rounded-lg p-2 hover:bg-slate-100 transition-colors">
-              <Bell className="h-5 w-5 text-slate-600" />
-              <span className="absolute top-1.5 right-1.5 h-2 w-2 rounded-full bg-red-500 animate-pulse" />
-            </button>
-
+          <div className="flex items-center gap-2">           
+            <NotificationBell />
             <div className="relative">
               <button
                 onClick={() => setUserMenuOpen(!userMenuOpen)}
