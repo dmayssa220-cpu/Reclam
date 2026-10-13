@@ -22,6 +22,13 @@ class RolePermissionSeeder extends Seeder
             'view-kpi',
             'view-map',
             'manage-users',
+            'assign-supervisor',    
+            'assign-technician',     
+            'resolve-reclamation',   
+            'validate-reclamation',  
+             'reject-reclamation',    
+            'reopen-reclamation',    
+            'upload-proof',           
         ];
 
         foreach ($permissions as $perm) {
@@ -39,9 +46,15 @@ class RolePermissionSeeder extends Seeder
             'view-reclamations', 'update-reclamation',
             'assign-reclamation', 'close-reclamation',
             'view-kpi', 'view-map',
+            'view-reclamations', 'update-reclamation',
+            'assign-technician', 'validate-reclamation',
+            'reject-reclamation', 'reopen-reclamation',
+            'close-reclamation', 'view-kpi', 'view-map',
         ]);
         $technicien->syncPermissions([
             'view-reclamations', 'update-reclamation', 'view-map',
+            'view-reclamations', 'update-reclamation',
+            'resolve-reclamation', 'upload-proof', 'view-map',
         ]);
         $citoyen->syncPermissions([
             'create-reclamation', 'view-own-reclamations',
@@ -50,28 +63,28 @@ class RolePermissionSeeder extends Seeder
             'view-reclamations', 'view-kpi', 'view-map',
         ]);
 
-        // Utilisateur admin par défaut
+        
         $user = User::firstOrCreate(
             ['email' => 'admin@waterleaks.local'],
             ['name' => 'Admin', 'password' => Hash::make('password')]
         );
         $user->assignRole('ADMIN');
 
-        // Utilisateur superviseur de test
+       
         $sup = User::firstOrCreate(
             ['email' => 'superviseur@waterleaks.local'],
             ['name' => 'Superviseur', 'password' => Hash::make('password'), 'zone' => 'Centre']
         );
         $sup->assignRole('SUPERVISEUR');
 
-        // Technicien
+        
         $tech = User::firstOrCreate(
             ['email' => 'technicien@waterleaks.local'],
             ['name' => 'Technicien', 'password' => Hash::make('password'), 'zone' => 'Centre']
         );
         $tech->assignRole('TECHNICIEN');
 
-        // Citoyen
+      
         $cit = User::firstOrCreate(
             ['email' => 'citoyen@waterleaks.local'],
             ['name' => 'Citoyen', 'password' => Hash::make('password')]

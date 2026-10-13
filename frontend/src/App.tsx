@@ -15,6 +15,9 @@ import { NotFoundPage } from '@/pages/errors/NotFoundPage';
 import { MapPage } from '@/pages/MapPage';
 import { NotificationsPage } from '@/pages/NotificationsPage';
 import { KpiPage } from '@/pages/KpiPage';
+import { ReclamationsPage } from '@/pages/ReclamationsPage';
+import { ReclamationDetailPage } from '@/pages/ReclamationDetailPage';
+import { RecurrencesPage } from '@/pages/RecurrencesPage';
 export default function App() {
   const { init, initialized } = useAuthStore();
 
@@ -32,23 +35,23 @@ export default function App() {
     <BrowserRouter>
       <Toaster position="top-right" richColors closeButton />
       <Routes>
-        {/* Routes publiques */}
+        
         <Route element={<GuestRoute />}>
           <Route path="/login"    element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
         </Route>
-
-        {/* Erreurs */}
         <Route path="/403" element={<ForbiddenPage />} />
 
-        {/* Routes protégées */}
         <Route element={<ProtectedRoute />}>
           <Route element={<AppLayout />}>
             <Route path="/dashboard" element={<DashboardPage />} />
             <Route path="/notifications" element={<NotificationsPage />} />
             <Route path="/kpi" element={<KpiPage />} />
-            <Route path="/reclamations" element={<DashboardPage />} />
-           <Route path="/carte" element={<MapPage />} />
+            <Route path="/reclamations" element={<ReclamationsPage />} />
+            <Route path="/reclamations" element={<ReclamationsPage />} />
+            <Route path="/reclamations/:id" element={<ReclamationDetailPage />} />
+            <Route path="/recurrences" element={<RecurrencesPage />} />
+           <Route path="/carte" element={<MapPage />} />          
             <Route path="/kpi" element={<DashboardPage />} />
             <Route path="/utilisateurs" element={
               <ProtectedRoute allowedRoles={['ADMIN']} />

@@ -95,7 +95,7 @@ export function CritiquesWidget() {
 
             {total > 5 && (
               <Link
-                to="/reclamations?gravite=critique&statut=EN_COURS"
+                to="/reclamations?gravite=critique&statut=actives"
                 className="block pt-2 text-center text-xs font-medium text-red-600 hover:text-red-700"
               >
                 Voir les {total - 5} autres →

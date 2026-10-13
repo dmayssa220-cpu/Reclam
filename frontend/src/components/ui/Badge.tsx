@@ -42,6 +42,7 @@ export function StatutBadge({ statut }: { statut: Statut }) {
     ASSIGNE:   { variant: 'warning',     label: 'Assigné' },
     EN_COURS:  { variant: 'warning',     label: 'En cours' },
     RESOLU:    { variant: 'success',     label: 'Résolu' },
+    A_VALIDER: { variant: 'info',        label: 'À valider' },
     CLOTURE:   { variant: 'success',     label: 'Clôturé' },
     REJETE:    { variant: 'destructive', label: 'Rejeté' },
     DOUBLON:   { variant: 'default',     label: 'Doublon' },

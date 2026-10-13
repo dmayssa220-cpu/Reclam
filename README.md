@@ -40,3 +40,16 @@ docker compose exec backend php artisan migrate --seed
 # API Backend : http://localhost:8000
 # phpMyAdmin  : http://localhost:8080
 # IA Service  : http://localhost:8001
+scénario:
+
+CITOYEN crée une réclamation                           │
+│         ↓                                               │
+│  ADMIN assigne à un SUPERVISEUR (de zone)               │
+│         ↓                                               │
+│  SUPERVISEUR assigne à un TECHNICIEN (de sa zone)       │
+│         ↓                                               │
+│  TECHNICIEN marque EN_COURS → résout avec preuve        │
+│         ↓                                               │
+│  SUPERVISEUR valide la résolution (RESOLU → CLOTURE)    │
+│         ↓                                               │
+│  Système détecte récurrence → relance si nécessaire  

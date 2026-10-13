@@ -34,4 +34,13 @@ public function reclamationsAssignees()
 {
     return $this->hasMany(Reclamation::class, 'technicien_id');
 }
+public function reclamationsSupervisees()
+{
+    return $this->hasMany(Reclamation::class, 'superviseur_id');
+}
+
+public function reclamationsValidees()
+{
+    return $this->hasMany(Reclamation::class, 'valide_par');
+}
 }

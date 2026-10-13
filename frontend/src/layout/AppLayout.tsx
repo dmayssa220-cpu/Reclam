@@ -3,6 +3,7 @@ import { useState } from 'react';
 import {
   LayoutDashboard, FileWarning, MapPin, BarChart3, Users,
   LogOut, Menu, X, Droplets, ChevronDown, User as UserIcon,
+  Repeat,
 } from 'lucide-react';
 import { useAuthStore } from '@/stores/authStore';
 import { cn } from '@/lib/utils';
@@ -13,6 +14,7 @@ const navigation: { name: string; href: string; icon: typeof LayoutDashboard; ro
   { name: 'Tableau de bord', href: '/dashboard',     icon: LayoutDashboard, roles: ['ADMIN', 'SUPERVISEUR', 'ANALYSTE', 'TECHNICIEN', 'CITOYEN'] },
   { name: 'Réclamations',    href: '/reclamations',  icon: FileWarning,     roles: ['ADMIN', 'SUPERVISEUR', 'ANALYSTE', 'TECHNICIEN', 'CITOYEN'] },
   { name: 'Carte',           href: '/carte',         icon: MapPin,          roles: ['ADMIN', 'SUPERVISEUR', 'ANALYSTE', 'TECHNICIEN'] },
+   { name: 'Récurrences',     href: '/recurrences',   icon: Repeat,          roles: ['ADMIN', 'SUPERVISEUR', 'ANALYSTE'] },
   { name: 'KPI / Rapports',  href: '/kpi',           icon: BarChart3,       roles: ['ADMIN', 'SUPERVISEUR', 'ANALYSTE'] },
   { name: 'Utilisateurs',    href: '/utilisateurs',  icon: Users,           roles: ['ADMIN'] },
 ];

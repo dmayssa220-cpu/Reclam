@@ -10,32 +10,48 @@ use App\Notifications\ReclamationCreatedNotification;
 use App\Notifications\ReclamationResolvedNotification;
 use App\Notifications\ReclamationStatutChangedNotification;
 use Illuminate\Support\Facades\Notification;
+use App\Services\RecurrenceDetector;
 
 class ReclamationObserver
 {
-    /**
-     * Après création : notifier superviseurs + admins.
-     */
+    
     public function created(Reclamation $reclamation): void
-    {
-        $destinataires = $this->superviseursEtAdmins($reclamation->zone);
+{
+    if (app()->runningInConsole() && !app()->runningUnitTests()) {
+        return;
+    }
 
-        if ($destinataires->isNotEmpty()) {
-            Notification::send($destinataires, new ReclamationCreatedNotification($reclamation));
-        }
+    $detecteur = app(RecurrenceDetector::class);
+    $similaires = $detecteur->detecter($reclamation);
 
-        // Alerte critique immédiate
-        if ($reclamation->gravite === 'critique') {
-            $admins = User::role('ADMIN')->get();
-            if ($admins->isNotEmpty()) {
-                Notification::send($admins, new CriticalReclamationNotification($reclamation));
-            }
+    if ($similaires->isNotEmpty()) {
+        $detecteur->marquerRecurrence($reclamation, $similaires->first());
+    }
+
+    
+    $destinataires = $this->superviseursEtAdmins($reclamation->zone);
+    if ($destinataires->isNotEmpty()) {
+        \Notification::send($destinataires, new \App\Notifications\ReclamationCreatedNotification($reclamation));
+    }
+
+    if ($reclamation->gravite === 'critique') {
+        $admins = \App\Models\User::role('ADMIN')->get();
+        if ($admins->isNotEmpty()) {
+            \Notification::send($admins, new \App\Notifications\CriticalReclamationNotification($reclamation));
         }
     }
 
-    /**
-     * Après mise à jour : détecter les changements importants.
-     */
+   
+    if ($reclamation->is_recurrence) {
+        $superviseurs = \App\Models\User::role('SUPERVISEUR')
+            ->where('zone', $reclamation->zone)
+            ->get();
+
+        if ($superviseurs->isNotEmpty()) {
+            \Notification::send($superviseurs, new \App\Notifications\ReclamationCreatedNotification($reclamation));
+        }
+    }
+}
     public function updated(Reclamation $reclamation): void
     {
         // Assignation à un technicien
