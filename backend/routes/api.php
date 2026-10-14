@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\DashboardController;
 use App\Http\Controllers\Api\KpiController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\UploadController;
+use App\Http\Controllers\Api\IaController;
 
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
@@ -78,10 +79,15 @@ Route::prefix('dashboard')->group(function () {
     Route::get('/critiques',        [KpiController::class, 'critiquesEnCours']);
     Route::get('/export',           [KpiController::class, 'export']);
 }); 
-Route::get('/users/superviseurs',         [UserController::class, 'superviseurs']);
-    Route::get('/users/techniciens',          [UserController::class, 'techniciens']);
-    Route::get('/users/techniciens/charge',   [UserController::class, 'chargeTechniciens']);   
+Route::prefix('ia')->group(function () {
+    Route::get('/health',                    [IaController::class, 'health']);
+    Route::post('/analyze/{reclamation}',    [IaController::class, 'analyze']);
+    Route::get('/recurrence/{reclamation}',  [IaController::class, 'predictRecurrence']);
+});
+Route::get('/users/superviseurs',   [UserController::class, 'superviseurs']);
+    Route::get('/users/techniciens', [UserController::class, 'techniciens']);
+    Route::get('/users/techniciens/charge',[UserController::class, 'chargeTechniciens']);
     Route::post('/uploads', [UploadController::class, 'store']);
     Route::delete('/uploads', [UploadController::class, 'destroy']);
 
-    });
+});

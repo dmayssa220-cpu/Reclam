@@ -78,13 +78,28 @@ services:
     container_name: wl_mailpit
     restart: unless-stopped
     ports:
-      - "1025:1025"   # SMTP
-      - "8025:8025"   # Interface web
+      - "1025:1025"
+      - "8025:8025"
     networks:
-      - wl_network              
+      - wl_network
+  ia-service:
+    build: ./ia-service
+    container_name: wl_ia_service
+    restart: unless-stopped
+    ports:
+      - "8001:8001"
+      - "11434:11434"
+    environment:
+      OLLAMA_MODEL: phi3:mini
+      OLLAMA_URL: http://localhost:11434
+    volumes:
+      - ollama_data:/root/.ollama
+    networks:
+      - wl_network
 
 volumes:
   mysql_data:
+  ollama_data:
 
 networks:
   wl_network:

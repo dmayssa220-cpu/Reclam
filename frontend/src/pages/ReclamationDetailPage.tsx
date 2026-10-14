@@ -1,11 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
-import {
-  ArrowLeft, MapPin, Calendar, User, Wrench, ShieldCheck,
-  Clock, AlertTriangle, RefreshCw, Loader2, ExternalLink,
+import {ArrowLeft, MapPin, Calendar, User, Wrench, ShieldCheck,Clock, AlertTriangle, RefreshCw, Loader2, ExternalLink,
 } from 'lucide-react';
-
 import { reclamationService } from '@/services/reclamationService';
 import { StatutProgress } from '@/components/reclamations/StatutProgress';
 import { WorkflowActions } from '@/components/reclamations/WorkflowActions';
@@ -16,6 +13,8 @@ import { Button } from '@/components/ui/Button';
 import { formatDate } from '@/lib/utils';
 import type { Reclamation } from '@/types';
 import type { ReactNode } from 'react';
+import { IaScoreBadge } from '@/components/reclamations/IaScoreBadge';
+import { IaSummaryCard } from '@/components/reclamations/IaSummaryCard';
 
 export function ReclamationDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -55,7 +54,7 @@ export function ReclamationDetailPage() {
 
   return (
     <div className="space-y-6">
-      {/* En-tête + retour */}
+
       <div className="flex items-start gap-4">
         <Link to="/reclamations">
           <Button variant="ghost" size="icon">
@@ -201,7 +200,10 @@ export function ReclamationDetailPage() {
         </div>
 
         {/* Colonne droite */}
-        <div className="space-y-6">
+      <div className="space-y-6">
+          {(r.ia_score != null || r.ia_resume) && (
+  <IaSummaryCard reclamation={r} onUpdate={setReclamation} />
+)}
           {/* Localisation */}
           {r.latitude && r.longitude && (
             <Card>
@@ -237,6 +239,9 @@ export function ReclamationDetailPage() {
             <CardHeader>
               <CardTitle>Informations</CardTitle>
             </CardHeader>
+            {r.ia_score != null && (
+  <IaScoreBadge score={r.ia_score} />
+)}
             <CardContent className="space-y-3 text-sm">
               <InfoRow
                 icon={<Calendar className="h-4 w-4 text-slate-400" />}

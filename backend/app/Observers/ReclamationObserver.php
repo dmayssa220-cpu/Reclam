@@ -15,40 +15,51 @@ use App\Services\RecurrenceDetector;
 class ReclamationObserver
 {
     
-    public function created(Reclamation $reclamation): void
+   public function created(Reclamation $reclamation): void
 {
     if (app()->runningInConsole() && !app()->runningUnitTests()) {
         return;
     }
 
-    $detecteur = app(RecurrenceDetector::class);
-    $similaires = $detecteur->detecter($reclamation);
-
-    if ($similaires->isNotEmpty()) {
-        $detecteur->marquerRecurrence($reclamation, $similaires->first());
+    // ===== 1) Enrichissement IA (avec fallback) =====
+    try {
+        app(\App\Services\ReclamationIaEnricher::class)->enrichir($reclamation);
+        $reclamation->refresh();
+    } catch (\Throwable $e) {
+        \Log::warning('IA enrichment failed', ['error' => $e->getMessage()]);
+        // On continue : la réclamation existe déjà
     }
 
-    
+    // ===== 2) Détection de récurrence classique (backup) =====
+    // (le service IA a déjà potentiellement marqué is_recurrence)
+    if (!$reclamation->is_recurrence) {
+        try {
+            $detecteur = app(\App\Services\RecurrenceDetector::class);
+            $similaires = $detecteur->detecter($reclamation);
+            if ($similaires->isNotEmpty()) {
+                $detecteur->marquerRecurrence($reclamation, $similaires->first());
+            }
+        } catch (\Throwable $e) {
+            \Log::warning('Recurrence detection failed', ['error' => $e->getMessage()]);
+        }
+    }
+
+    // ===== 3) Notifications =====
     $destinataires = $this->superviseursEtAdmins($reclamation->zone);
     if ($destinataires->isNotEmpty()) {
-        \Notification::send($destinataires, new \App\Notifications\ReclamationCreatedNotification($reclamation));
+        \Notification::send(
+            $destinataires,
+            new \App\Notifications\ReclamationCreatedNotification($reclamation)
+        );
     }
 
     if ($reclamation->gravite === 'critique') {
         $admins = \App\Models\User::role('ADMIN')->get();
         if ($admins->isNotEmpty()) {
-            \Notification::send($admins, new \App\Notifications\CriticalReclamationNotification($reclamation));
-        }
-    }
-
-   
-    if ($reclamation->is_recurrence) {
-        $superviseurs = \App\Models\User::role('SUPERVISEUR')
-            ->where('zone', $reclamation->zone)
-            ->get();
-
-        if ($superviseurs->isNotEmpty()) {
-            \Notification::send($superviseurs, new \App\Notifications\ReclamationCreatedNotification($reclamation));
+            \Notification::send(
+                $admins,
+                new \App\Notifications\CriticalReclamationNotification($reclamation)
+            );
         }
     }
 }
