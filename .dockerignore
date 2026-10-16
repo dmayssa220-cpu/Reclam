@@ -1,0 +1,11 @@
+**/.git
+**/.env
+**/.env.*
+**/node_modules
+**/vendor
+**/storage/logs/*
+**/tests
+**/.github
+**/*.md
+**/docker-compose*.yml
+**/Dockerfile*

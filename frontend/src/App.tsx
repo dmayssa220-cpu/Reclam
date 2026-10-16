@@ -18,6 +18,7 @@ import { KpiPage } from '@/pages/KpiPage';
 import { ReclamationsPage } from '@/pages/ReclamationsPage';
 import { ReclamationDetailPage } from '@/pages/ReclamationDetailPage';
 import { RecurrencesPage } from '@/pages/RecurrencesPage';
+import { UsersPage } from '@/pages/admin/UsersPage';
 export default function App() {
   const { init, initialized } = useAuthStore();
 
@@ -51,6 +52,7 @@ export default function App() {
             <Route path="/reclamations" element={<ReclamationsPage />} />
             <Route path="/reclamations/:id" element={<ReclamationDetailPage />} />
             <Route path="/recurrences" element={<RecurrencesPage />} />
+            <Route path="/utilisateurs" element={<UsersPage />} />
            <Route path="/carte" element={<MapPage />} />          
             <Route path="/kpi" element={<DashboardPage />} />
             <Route path="/utilisateurs" element={

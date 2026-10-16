@@ -9,11 +9,21 @@ use App\Http\Controllers\Api\KpiController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\UploadController;
 use App\Http\Controllers\Api\IaController;
+use App\Http\Controllers\Api\Admin\UserController as AdminUserController;
 
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/logout', [AuthController::class, 'logout']);
-
+Route::post('/login', [AuthController::class, 'login'])
+    ->middleware('throttle:login');
+Route::middleware(['auth:sanctum', 'role:ADMIN'])->prefix('admin')->group(function () {
+    Route::apiResource('users', AdminUserController::class);
+    Route::patch('users/{user}/toggle-active', [AdminUserController::class, 'toggleActive']);
+});
+Route::middleware('auth:sanctum')->group(function () {
+    Route::put('/profile', [AuthController::class, 'updateProfile']);
+    Route::put('/profile/password', [AuthController::class, 'updatePassword']);
+});
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/me', [AuthController::class, 'me']);
     Route::get('/reclamations',              [ReclamationController::class, 'index']);

@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Api;
 use App\Models\User;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreReclamationRequest;
@@ -129,7 +128,7 @@ class ReclamationController extends Controller
             return response()->json(['message' => 'Statut inchangé.'], 200);
         }
 
-        DB::transaction(function () use ($reclamation, $request, $ancien, $nouveau) {
+        $reclamation->getConnection()->transaction(function () use ($reclamation, $request, $ancien, $nouveau) {
             $reclamation->statut = $nouveau;
 
             if ($nouveau === 'ASSIGNE' && !$reclamation->assigned_at) {
@@ -222,7 +221,7 @@ public function assignSupervisor(Request $request, Reclamation $reclamation)
 
     $ancienStatut = $reclamation->statut;
 
-    DB::transaction(function () use ($reclamation, $superviseur, $ancienStatut) {
+    $reclamation->getConnection()->transaction(function () use ($reclamation, $superviseur, $ancienStatut) {
         $reclamation->update([
             'superviseur_id' => $superviseur->id,
             'statut'         => 'ASSIGNE',
@@ -264,7 +263,7 @@ public function assignTechnician(Request $request, Reclamation $reclamation)
 
     $ancienStatut = $reclamation->statut;
 
-    DB::transaction(function () use ($reclamation, $technicien, $data, $ancienStatut) {
+    $reclamation->getConnection()->transaction(function () use ($reclamation, $technicien, $data, $ancienStatut) {
         $reclamation->update([
             'technicien_id' => $technicien->id,
             'statut'        => 'ASSIGNE',
@@ -332,7 +331,7 @@ public function resolve(Request $request, Reclamation $reclamation)
 
     $ancienStatut = $reclamation->statut;
 
-    DB::transaction(function () use ($reclamation, $data, $ancienStatut) {
+    $reclamation->getConnection()->transaction(function () use ($reclamation, $data, $ancienStatut) {
         $reclamation->update([
             'preuve_commentaire' => $data['preuve_commentaire'],
             'duree_intervention' => $data['duree_intervention'],
@@ -368,7 +367,7 @@ public function validateReclamation(Request $request, Reclamation $reclamation)
 
     $ancienStatut = $reclamation->statut;
 
-    DB::transaction(function () use ($reclamation, $data, $ancienStatut) {
+    $reclamation->getConnection()->transaction(function () use ($reclamation, $data, $ancienStatut) {
         $reclamation->update([
             'statut'     => 'CLOTURE',
             'valide_par' => auth()->id(),
@@ -426,7 +425,7 @@ public function reopen(Request $request, Reclamation $reclamation)
 
     $ancienStatut = $reclamation->statut;
 
-    DB::transaction(function () use ($reclamation, $data, $ancienStatut) {
+    $reclamation->getConnection()->transaction(function () use ($reclamation, $data, $ancienStatut) {
         $reclamation->update([
             'statut'     => 'EN_COURS',
             'gravite'    => $data['gravite'] ?? $reclamation->gravite,

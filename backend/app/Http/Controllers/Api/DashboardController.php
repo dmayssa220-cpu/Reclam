@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Models\Reclamation;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
 {
@@ -226,7 +225,7 @@ class DashboardController extends Controller
     {
         $total = (clone $base)->whereNotNull('adresse')->where('adresse', '!=', '')->count();
 
-        $recurrentes = DB::table('reclamations')
+        $recurrentes = Reclamation::query()
             ->whereBetween('created_at', [now()->subDays(90), now()])
             ->whereNotNull('adresse')
             ->where('adresse', '!=', '')
